@@ -5,10 +5,26 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 
+import { PerformanceService } from './performance.service';
+
 @Controller('suppliers')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class SuppliersController {
-    constructor(private readonly suppliersService: SuppliersService) { }
+    constructor(
+        private readonly suppliersService: SuppliersService,
+        private readonly performanceService: PerformanceService
+    ) { }
+
+    @Get('performance')
+    getPerformance(@Request() req: any) {
+        return this.performanceService.getAllPerformances(req.user.companyId);
+    }
+
+    @Get(':id/performance')
+    getSupplierPerformance(@Param('id') id: string) {
+        return this.performanceService.getSupplierPerformance(id);
+    }
+
 
     @Post()
     @Roles(Role.COMPANY_ADMIN, Role.PROCUREMENT_MANAGER)

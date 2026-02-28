@@ -20,9 +20,20 @@ export class InventoryController {
         return this.inventoryService.getLowStock(req.user.companyId);
     }
 
+    @Get('logs')
+    getLogs(@Request() req: any, @Query('productId') productId?: string) {
+        return this.inventoryService.getAuditLogs(req.user.companyId, productId);
+    }
+
     @Patch(':id/stock')
     @Roles(Role.COMPANY_ADMIN, Role.INVENTORY_MANAGER, Role.STAFF)
-    updateStock(@Param('id') id: string, @Body('quantity') quantity: number) {
-        return this.inventoryService.updateStock(id, quantity);
+    updateStock(
+        @Param('id') id: string,
+        @Body('quantity') quantity: number,
+        @Body('reason') reason: string,
+        @Request() req: any
+    ) {
+        return this.inventoryService.updateStock(id, quantity, req.user.userId, reason);
     }
+
 }

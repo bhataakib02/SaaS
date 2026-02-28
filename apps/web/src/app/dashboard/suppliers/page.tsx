@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import SupplierScorecard from "@/components/suppliers/SupplierScorecard";
 
 export default function SuppliersPage() {
     const { data: session } = useSession();
@@ -12,7 +13,7 @@ export default function SuppliersPage() {
     useEffect(() => {
         const fetchSuppliers = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/suppliers`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/suppliers/performance`, {
                     headers: {
                         Authorization: `Bearer ${(session as any)?.accessToken}`,
                     },
@@ -41,38 +42,40 @@ export default function SuppliersPage() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {isLoading ? (
-                    [1, 2, 3].map(i => <div key={i} className="glass p-6 rounded-3xl h-40 animate-pulse" />)
+                    [1, 2, 3].map(i => <div key={i} className="glass p-6 rounded-3xl h-64 animate-pulse" />)
                 ) : suppliers.length === 0 ? (
                     <div className="col-span-full py-20 text-center glass rounded-3xl text-white/40">No suppliers found. 🥝</div>
                 ) : (
                     suppliers.map((s) => (
-                        <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            key={s.id}
-                            className="glass p-6 rounded-3xl border border-white/10 space-y-4 group cursor-pointer"
-                        >
-                            <div className="flex justify-between items-start">
-                                <div className="w-12 h-12 rounded-2xl bg-orange/20 flex items-center justify-center text-2xl group-hover:bg-orange/40 transition-colors">🚚</div>
-                                <div className="flex gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <span key={i} className={`text-xs ${i < (s.rating || 0) ? "text-lemon" : "text-white/10"}`}>★</span>
-                                    ))}
+                        <div key={s.id} className="space-y-4">
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                className="glass p-6 rounded-3xl border border-white/10 space-y-4 group cursor-pointer"
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div className="w-12 h-12 rounded-2xl bg-orange/20 flex items-center justify-center text-2xl group-hover:bg-orange/40 transition-colors">🚚</div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Active</span>
+                                        <div className="w-2 h-2 rounded-full bg-kiwi"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-bold text-white group-hover:text-orange transition-colors">{s.name}</h3>
-                                <p className="text-white/40 text-sm font-medium">{s.contactEmail}</p>
-                            </div>
-                            <div className="pt-4 border-t border-white/5 flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                                <span className="text-white/40">Terms:</span>
-                                <span className="text-white/80">{s.paymentTerms || "N/A"}</span>
-                            </div>
-                        </motion.div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-white group-hover:text-orange transition-colors">{s.name}</h3>
+                                    <p className="text-white/40 text-sm font-medium">{s.contactEmail}</p>
+                                </div>
+                                <div className="pt-4 border-t border-white/5 flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+                                    <span className="text-white/40">Terms:</span>
+                                    <span className="text-white/80">{s.paymentTerms || "N/A"}</span>
+                                </div>
+                            </motion.div>
+                            <SupplierScorecard performance={s.performance} />
+                        </div>
                     ))
                 )}
             </div>
         </div>
     );
 }
+
