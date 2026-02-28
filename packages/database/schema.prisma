@@ -176,3 +176,9 @@ model ActivityLog {
   details   Json?
   createdAt DateTime @default(now())
 }
+
+model Test {
+  id   String @id @default(uuid())
+  name String
+}
+

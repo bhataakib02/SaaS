@@ -1,13 +1,184 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+enum Role {
+  SUPER_ADMIN
+  COMPANY_ADMIN
+  PROCUREMENT_MANAGER
+  INVENTORY_MANAGER
+  STAFF
+  SUPPLIER
+}
+
+enum POStatus {
+  DRAFT
+  SENT
+  APPROVED
+  DELIVERED
+  CANCELLED
+}
+
+enum Unit {
+  BOTTLE
+  ML
+  CASE
+  KG
+  GRAM
+  LITRE
+}
+
+model Company {
+  id           String   @id @default(cuid())
+  name         String
+  businessType String?
+  taxConfig    Json?
+  currency     String   @default("USD")
+  settings     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  users     User[]
+  venues    Venue[]
+  suppliers Supplier[]
+  products  Product[]
+  pos       PurchaseOrder[]
+  inventory Inventory[]
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventory Inventory[]
+  pos       PurchaseOrder[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(STAFF)
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activityLogs ActivityLog[]
+}
+
+model Supplier {
+  id           String   @id @default(cuid())
+  name         String
+  contactEmail String?
+  paymentTerms String?
+  rating       Int?     @default(0)
+  docs         String[] // URLs to S3
+  companyId    String
+  company      Company  @relation(fields: [companyId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  products Product[]
+  pos      PurchaseOrder[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  sku         String?
+  unit        Unit     @default(BOTTLE)
+  category    String?
+  basePrice   Decimal?
+  vat         Decimal?
+  supplierId  String
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  priceHistory PriceHistory[]
+  inventory    Inventory[]
+  poItems      PurchaseOrderItem[]
+
+  @@unique([companyId, sku])
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Decimal
+  date      DateTime @default(now())
+}
+
+model PurchaseOrder {
+  id        String   @id @default(cuid())
+  poNumber  String   @unique
+  status    POStatus @default(DRAFT)
+  total     Decimal  @default(0)
+  notes     String?
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  venueId   String
+  venue     Venue    @relation(fields: [venueId], references: [id])
+  supplierId String
+  supplier  Supplier @relation(fields: [supplierId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PurchaseOrderItem[]
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id])
+  productId       String
+  product         Product       @relation(fields: [productId], references: [id])
+  quantity        Int
+  price           Decimal
+  tax             Decimal?
+}
+
+model Inventory {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  venueId   String
+  venue     Venue    @relation(fields: [venueId], references: [id])
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  quantity  Int      @default(0)
+  minStock  Int?     @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@unique([venueId, productId])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  resource  String?
+  details   Json?
+  createdAt DateTime @default(now())
 }
 
 model Test {
   id   String @id @default(uuid())
   name String
 }
+
