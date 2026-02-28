@@ -81,7 +81,7 @@ export default function LoginPage() {
 
                 <div className="text-center pt-4">
                     <p className="text-sm text-white/60">
-                        Don't have an account? <span className="text-white hover:underline cursor-pointer">Contact Admin</span>
+                        Don't have an account? <a href="mailto:admin@fruitprocurement.com" className="text-white hover:underline">Contact Admin</a>
                     </p>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -19,32 +20,36 @@ export default function Home() {
             The enterprise-grade SaaS for the hospitality industry. Manage suppliers, track inventory, and automate procurement with a unique fruit-inspired interface.
           </p>
           <div className="flex items-center justify-center gap-4">
-            <button className="gradient-btn px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-lg">
-              Get Started
-            </button>
-            <button className="glass px-8 py-4 rounded-2xl font-bold text-lg hover:bg-strawberry/5 transition-colors">
-              Request Demo
-            </button>
+            <Link href="/register">
+              <button className="gradient-btn px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-lg cursor-pointer">
+                Get Started
+              </button>
+            </Link>
+            <Link href="/login">
+              <button className="glass px-8 py-4 rounded-2xl font-bold text-lg hover:bg-strawberry/5 transition-colors cursor-pointer">
+                Request Demo
+              </button>
+            </Link>
           </div>
         </section>
 
         {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass p-8 rounded-2xl space-y-4">
+          <div className="glass p-8 rounded-2xl space-y-4 hover:scale-[1.02] transition-transform cursor-pointer">
             <div className="w-12 h-12 rounded-xl bg-strawberry/20 flex items-center justify-center text-strawberry text-2xl">🍓</div>
             <h3 className="text-xl font-bold">Fast Ingestion</h3>
             <p className="text-sm text-foreground/60 leading-relaxed">
               Accepts Excel, CSV, and PDF. AI-powered column mapping for seamless data entry.
             </p>
           </div>
-          <div className="glass p-8 rounded-2xl space-y-4">
+          <div className="glass p-8 rounded-2xl space-y-4 hover:scale-[1.02] transition-transform cursor-pointer">
             <div className="w-12 h-12 rounded-xl bg-orange/20 flex items-center justify-center text-orange text-2xl">🍊</div>
             <h3 className="text-xl font-bold">Real-time Stock</h3>
             <p className="text-sm text-foreground/60 leading-relaxed">
               Monitor inventory across multiple venues with real-time tracking and low-stock alerts.
             </p>
           </div>
-          <div className="glass p-8 rounded-2xl space-y-4">
+          <div className="glass p-8 rounded-2xl space-y-4 hover:scale-[1.02] transition-transform cursor-pointer">
             <div className="w-12 h-12 rounded-xl bg-kiwi/20 flex items-center justify-center text-kiwi text-2xl">🥝</div>
             <h3 className="text-xl font-bold">Smart Analytics</h3>
             <p className="text-sm text-foreground/60 leading-relaxed">
