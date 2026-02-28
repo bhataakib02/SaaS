@@ -45,7 +45,7 @@ export default async function DashboardPage() {
                     <div className="flex gap-4">
                         <div className="glass px-4 py-2 rounded-full flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-kiwi animate-pulse"></div>
-                            <span className="text-sm font-medium">{session.user?.role}</span>
+                            <p className="text-white/60 font-medium">Role: {(session?.user as any)?.role || 'Staff'}</p>
                         </div>
                     </div>
                 </header>

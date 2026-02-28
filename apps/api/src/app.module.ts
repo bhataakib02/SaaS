@@ -7,9 +7,22 @@ import { CompaniesModule } from './companies/companies.module';
 import { VenuesModule } from './venues/venues.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { ProductsModule } from './products/products.module';
+import { IngestionModule } from './ingestion/ingestion.module';
+import { OrdersModule } from './orders/orders.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, CompaniesModule, VenuesModule, SuppliersModule, ProductsModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    CompaniesModule,
+    VenuesModule,
+    SuppliersModule,
+    ProductsModule,
+    IngestionModule,
+    OrdersModule,
+    InventoryModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
