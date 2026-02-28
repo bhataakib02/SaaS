@@ -6,6 +6,8 @@ import Link from "next/link";
 import SpendChart from "@/components/analytics/SpendChart";
 import ForecastChart from "@/components/analytics/ForecastChart";
 import SmartInsights from "@/components/dashboard/SmartInsights";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
+
 
 export default function DashboardPage() {
     const { data: session } = useSession();
@@ -96,13 +98,15 @@ export default function DashboardPage() {
                             </h1>
                             <p className="text-white/60 mt-1 font-medium">Welcome back, {session?.user?.name || 'User'} 🍓</p>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex items-center gap-6">
+                            <NotificationCenter accessToken={(session as any)?.accessToken} />
                             <div className="glass px-4 py-2 rounded-full flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-kiwi animate-pulse"></div>
                                 <p className="text-white/60 font-medium">Role: {(session?.user as any)?.role || 'Staff'}</p>
                             </div>
                         </div>
                     </header>
+
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="glass p-6 rounded-3xl border border-white/10 hover:border-strawberry/30 transition-colors">

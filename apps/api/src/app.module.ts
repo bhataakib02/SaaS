@@ -13,6 +13,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
 import { AiModule } from './ai/ai.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AiModule } from './ai/ai.module';
     AnalyticsModule,
     BillingModule,
     AiModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
