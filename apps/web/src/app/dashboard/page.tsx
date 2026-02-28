@@ -1,82 +1,160 @@
-import { auth, signOut } from "@/auth";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function DashboardPage() {
-    const session = await auth();
+import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import SpendChart from "@/components/analytics/SpendChart";
 
-    if (!session) {
-        redirect("/login");
-    }
+export default function DashboardPage() {
+    const { data: session } = useSession();
+    const [summary, setSummary] = useState<any>(null);
+    const [trend, setTrend] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            if (!session) return;
+            try {
+                const [summaryRes, trendRes] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/analytics/spend-summary`, {
+                        headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
+                    }),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/analytics/spend-trend`, {
+                        headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
+                    })
+                ]);
+
+                const summaryData = await summaryRes.json();
+                const trendData = await trendRes.json();
+
+                setSummary(summaryData);
+                setTrend(trendData);
+            } catch (err) {
+                console.error("Failed to fetch analytics", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, [session]);
+
+    if (!session) return null;
 
     return (
         <div className="min-h-screen bg-[var(--background)] flex">
-            {/* Sidebar Placeholder */}
-            <aside className="w-64 glass m-4 rounded-2xl flex flex-col p-6 space-y-8">
-                <div className="flex items-center gap-3">
-                    <span className="text-2xl">🍓</span>
-                    <span className="font-bold text-xl tracking-tight">Fruitify</span>
+            {/* Sidebar */}
+            <aside className="w-64 glass m-4 rounded-3xl flex flex-col p-6 space-y-8 h-[calc(100vh-2rem)] sticky top-4">
+                <div className="flex items-center gap-3 px-2">
+                    <span className="text-3xl">🍓</span>
+                    <span className="font-black text-2xl tracking-tighter text-white">FRUITIFY</span>
                 </div>
 
                 <nav className="flex-1 space-y-2">
-                    {['Dashboard', 'Suppliers', 'Catalog', 'Inventory', 'Orders'].map((item) => (
-                        <div key={item} className={`px-4 py-3 rounded-xl cursor-pointer transition-all ${item === 'Dashboard' ? 'bg-strawberry/10 text-strawberry font-bold border border-strawberry/20' : 'hover:bg-strawberry/5 opacity-60'}`}>
-                            {item}
-                        </div>
+                    {[
+                        { name: 'Overview', icon: '📊', path: '/dashboard' },
+                        { name: 'Orders', icon: '📦', path: '/dashboard/orders' },
+                        { name: 'Inventory', icon: '🌡️', path: '/dashboard/inventory' },
+                        { name: 'Products', icon: '🍷', path: '/dashboard/products' },
+                        { name: 'Suppliers', icon: '🚚', path: '/dashboard/suppliers' },
+                        { name: 'Ingestion', icon: '🤖', path: '/dashboard/ingestion' },
+                        { name: 'Settings', icon: '⚙️', path: '/dashboard/settings/billing' },
+                    ].map((item) => (
+                        <Link
+                            key={item.name}
+                            href={item.path}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${item.name === 'Overview' ? 'bg-strawberry text-white shadow-lg shadow-strawberry/20' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}
+                        >
+                            <span className="text-xl group-hover:scale-110 transition-transform">{item.icon}</span>
+                            <span className="font-bold text-sm tracking-wide">{item.name}</span>
+                        </Link>
                     ))}
                 </nav>
 
-                <form action={async () => {
-                    "use server";
-                    await signOut();
-                }}>
-                    <button className="w-full p-4 rounded-xl hover:bg-strawberry/5 text-left text-sm opacity-60">
-                        Logout
-                    </button>
-                </form>
+                <button
+                    onClick={() => signOut()}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-white/40 hover:bg-strawberry/10 hover:text-strawberry transition-all font-bold text-sm"
+                >
+                    <span>🚪</span> Logout
+                </button>
             </aside>
 
             {/* Main Content */}
             <main className="flex-1 p-8 space-y-8">
-                <header className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold">Good morning, {session.user?.name || 'Manager'}</h1>
-                        <p className="text-foreground/50">Welcome to your procurement overview</p>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="glass px-4 py-2 rounded-full flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-kiwi animate-pulse"></div>
-                            <p className="text-white/60 font-medium">Role: {(session?.user as any)?.role || 'Staff'}</p>
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+                    <header className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-black text-white tracking-tight">
+                                Overview
+                            </h1>
+                            <p className="text-white/60 mt-1 font-medium">Welcome back, {session?.user?.name || 'User'} 🍓</p>
                         </div>
-                    </div>
-                </header>
+                        <div className="flex gap-4">
+                            <div className="glass px-4 py-2 rounded-full flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-kiwi animate-pulse"></div>
+                                <p className="text-white/60 font-medium">Role: {(session?.user as any)?.role || 'Staff'}</p>
+                            </div>
+                        </div>
+                    </header>
 
-                <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {[
-                        { label: 'Total Spend', val: '$12,450', trend: '+12%', color: 'strawberry' },
-                        { label: 'Active Orders', val: '8', trend: '2 pending', color: 'orange' },
-                        { label: 'In-stock Items', val: '1,204', trend: '98%', color: 'kiwi' },
-                        { label: 'Alerts', val: '3', trend: 'Low stock', color: 'lemon' },
-                    ].map((stat) => (
-                        <div key={stat.label} className="glass p-6 rounded-2xl relative overflow-hidden group">
-                            <div className={`absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 rounded-full bg-${stat.color}/10 group-hover:scale-110 transition-transform`}></div>
-                            <p className="text-sm text-foreground/50 font-medium">{stat.label}</p>
-                            <p className="text-2xl font-bold mt-1">{stat.val}</p>
-                            <div className={`text-xs mt-2 font-bold text-${stat.color}`}>{stat.trend}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="glass p-6 rounded-3xl border border-white/10 hover:border-strawberry/30 transition-colors">
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Total Spend</p>
+                            <h2 className="text-3xl font-black text-white mt-1">${summary?.totalSpend?.toLocaleString() || '0'}</h2>
+                            <p className="text-kiwi text-xs font-bold mt-2">↑ 12% vs last month</p>
                         </div>
-                    ))}
-                </section>
-
-                <section className="glass rounded-2xl p-8 h-96 flex items-center justify-center border-dashed border-2 border-foreground/10">
-                    <div className="text-center space-y-4">
-                        <div className="text-4xl">📈</div>
-                        <p className="text-foreground/40 font-medium">Dashboard Analytics Chart (Fruit Palette)</p>
-                        <div className="flex gap-2 justify-center">
-                            <div className="w-8 h-2 rounded-full bg-strawberry"></div>
-                            <div className="w-8 h-2 rounded-full bg-orange"></div>
-                            <div className="w-8 h-2 rounded-full bg-kiwi"></div>
+                        <div className="glass p-6 rounded-3xl border border-white/10 hover:border-orange/30 transition-colors">
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Orders Placed</p>
+                            <h2 className="text-3xl font-black text-white mt-1">42</h2>
+                            <p className="text-white/20 text-xs font-bold mt-2">8 pending approval</p>
+                        </div>
+                        <div className="glass p-6 rounded-3xl border border-white/10 hover:border-lemon/30 transition-colors">
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Low Stock Items</p>
+                            <h2 className="text-3xl font-black text-white mt-1">12</h2>
+                            <p className="text-strawberry text-xs font-bold mt-2">Action required</p>
+                        </div>
+                        <div className="glass p-6 rounded-3xl border border-white/10 hover:border-kiwi/30 transition-colors">
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Active Suppliers</p>
+                            <h2 className="text-3xl font-black text-white mt-1">8</h2>
+                            <p className="text-kiwi text-xs font-bold mt-2">All systems normal</p>
                         </div>
                     </div>
-                </section>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <SpendChart
+                            data={trend}
+                            type="line"
+                            title="Spend Trend (30 Days)"
+                        />
+                        <SpendChart
+                            data={summary?.spendByCategory || []}
+                            type="bar"
+                            title="Spend by Category"
+                        />
+                    </div>
+
+                    <div className="glass p-8 rounded-3xl border border-white/10">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-white">Recent Activity</h2>
+                            <button className="text-orange text-sm font-bold hover:underline">View all</button>
+                        </div>
+                        <div className="space-y-4">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all cursor-pointer">
+                                    <div className="w-12 h-12 rounded-xl bg-strawberry/20 flex items-center justify-center text-xl">🍓</div>
+                                    <div className="flex-1">
+                                        <p className="text-white font-bold text-sm">New Purchase Order: PO-2024-00{i}</p>
+                                        <p className="text-white/40 text-xs">Approved by Admin • 2 hours ago</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-white font-black">$1,240.00</p>
+                                        <span className="text-[10px] font-black p-1 bg-kiwi/20 text-kiwi rounded">DELIVERED</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     );
