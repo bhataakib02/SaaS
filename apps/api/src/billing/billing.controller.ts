@@ -10,11 +10,12 @@ import { Role } from '@prisma/client';
 export class BillingController {
     constructor(private readonly billingService: BillingService) { }
 
-    @Post('create-checkout-session')
+    @Post('checkout')
     @Roles(Role.COMPANY_ADMIN)
     async createCheckout(@Request() req: any, @Body('priceId') priceId: string) {
         return this.billingService.createCheckoutSession(req.user.companyId, priceId);
     }
+
 
     @Get('status')
     @Roles(Role.COMPANY_ADMIN)
