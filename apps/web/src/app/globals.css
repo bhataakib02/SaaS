@@ -1,39 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 :root {
-    /* ULTRA-ADVANCED INTERACTIVE DESIGN Palette */
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --secondary: #ec4899;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --dark: #1f2937;
-    --light: #f9fafb;
-    --glass: rgba(255, 255, 255, 0.1);
-    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --background: #FFF5F5;
+    --foreground: #171717;
 
-    /* Mapping to layout background/foreground */
-    --background: var(--light);
-    --foreground: var(--dark);
-
-    /* Mapping original fruit-themed variables to new UI colors */
-    --strawberry: var(--primary);
-    /* Used as main action color */
-    --orange: var(--secondary);
-    /* Used as secondary accent */
-    --lemon: var(--warning);
-    /* Used for warnings/alerts */
-    --kiwi: var(--success);
-    /* Used for success/positive actions */
-    --grape: var(--primary-dark);
+    /* Fruit Design System (MAPPED to new ULTRA-ADVANCED INTERACTIVE DESIGN colors) */
+    --strawberry: #6366f1;
+    /* Primary */
+    --orange: #ec4899;
+    /* Secondary */
+    --lemon: #f59e0b;
+    /* Warning */
+    --kiwi: #10b981;
+    /* Success */
+    --grape: #4f46e5;
+    /* Primary Dark */
 
     /* Blends & Gradients */
-    --gradient-fruit: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --gradient-fruit: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(99, 102, 241, 0.1);
-    /* Based on primary color */
+    /* Based on new primary */
 }
 
 @theme inline {
@@ -51,10 +38,9 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Update background/foreground and glassmorphism for dark contrast */
-        --background: var(--dark);
-        --foreground: var(--light);
-        --glass-bg: rgba(31, 41, 55, 0.7);
+        --background: #121212;
+        --foreground: #FFF5F5;
+        --glass-bg: rgba(18, 18, 18, 0.7);
         --glass-border: rgba(99, 102, 241, 0.2);
     }
 }
@@ -62,7 +48,7 @@
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: 'Space Grotesk', var(--font-geist-sans), sans-serif;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
 }
 
@@ -83,4 +69,5 @@ body {
 .gradient-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5);
+    /* Updated shadow color */
 }
