@@ -1,67 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #FFF5F5;
-  --foreground: #171717;
-  
-  /* Fruit Design System */
-  --strawberry: #E63946;
-  --orange: #F77F00;
-  --lemon: #F9C74F;
-  --kiwi: #43AA8B;
-  --grape: #5A189A;
-  
-  /* Blends & Gradients */
-  --gradient-fruit: linear-gradient(135deg, #E63946 0%, #F77F00 100%);
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(230, 57, 70, 0.1);
+    /* ULTRA-ADVANCED INTERACTIVE DESIGN Palette */
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --dark: #1f2937;
+    --light: #f9fafb;
+    --glass: rgba(255, 255, 255, 0.1);
+    --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+    /* Mapping to layout background/foreground */
+    --background: var(--light);
+    --foreground: var(--dark);
+
+    /* Mapping original fruit-themed variables to new UI colors */
+    --strawberry: var(--primary);
+    /* Used as main action color */
+    --orange: var(--secondary);
+    /* Used as secondary accent */
+    --lemon: var(--warning);
+    /* Used for warnings/alerts */
+    --kiwi: var(--success);
+    /* Used for success/positive actions */
+    --grape: var(--primary-dark);
+
+    /* Blends & Gradients */
+    --gradient-fruit: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(99, 102, 241, 0.1);
+    /* Based on primary color */
 }
 
 @theme inline {
-  --color-strawberry: var(--strawberry);
-  --color-orange: var(--orange);
-  --color-lemon: var(--lemon);
-  --color-kiwi: var(--kiwi);
-  --color-grape: var(--grape);
-  
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  
-  --background-image-gradient-fruit: var(--gradient-fruit);
+    --color-strawberry: var(--strawberry);
+    --color-orange: var(--orange);
+    --color-lemon: var(--lemon);
+    --color-kiwi: var(--kiwi);
+    --color-grape: var(--grape);
+
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+
+    --background-image-gradient-fruit: var(--gradient-fruit);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121212;
-    --foreground: #FFF5F5;
-    --glass-bg: rgba(18, 18, 18, 0.7);
-    --glass-border: rgba(90, 24, 154, 0.2);
-  }
+    :root {
+        /* Update background/foreground and glassmorphism for dark contrast */
+        --background: var(--dark);
+        --foreground: var(--light);
+        --glass-bg: rgba(31, 41, 55, 0.7);
+        --glass-border: rgba(99, 102, 241, 0.2);
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: 'Space Grotesk', var(--font-geist-sans), sans-serif;
+    min-height: 100vh;
 }
 
 /* Glassmorphism utility */
 .glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 }
 
 .gradient-btn {
-  background: var(--gradient-fruit);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--gradient-fruit);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .gradient-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(230, 57, 70, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5);
 }
-
