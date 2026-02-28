@@ -12,6 +12,7 @@ import { OrdersModule } from './orders/orders.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BillingModule } from './billing/billing.module';
     InventoryModule,
     AnalyticsModule,
     BillingModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

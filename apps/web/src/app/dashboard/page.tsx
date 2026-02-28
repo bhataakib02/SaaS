@@ -4,39 +4,46 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import SpendChart from "@/components/analytics/SpendChart";
+import ForecastChart from "@/components/analytics/ForecastChart";
+import SmartInsights from "@/components/dashboard/SmartInsights";
 
 export default function DashboardPage() {
     const { data: session } = useSession();
     const [summary, setSummary] = useState<any>(null);
     const [trend, setTrend] = useState<any[]>([]);
+    const [forecast, setForecast] = useState<any[]>([]);
+    const [alerts, setAlerts] = useState<any[]>([]);
+    const [savings, setSavings] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchAnalytics = async () => {
+        const fetchData = async () => {
             if (!session) return;
+            const headers = { Authorization: `Bearer ${(session as any)?.accessToken}` };
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
             try {
-                const [summaryRes, trendRes] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/analytics/spend-summary`, {
-                        headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
-                    }),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/analytics/spend-trend`, {
-                        headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
-                    })
+                const [summaryRes, trendRes, forecastRes, alertsRes, savingsRes] = await Promise.all([
+                    fetch(`${baseUrl}/analytics/spend-summary`, { headers }),
+                    fetch(`${baseUrl}/analytics/spend-trend`, { headers }),
+                    fetch(`${baseUrl}/ai/forecast`, { headers }),
+                    fetch(`${baseUrl}/ai/alerts`, { headers }),
+                    fetch(`${baseUrl}/ai/savings`, { headers })
                 ]);
 
-                const summaryData = await summaryRes.json();
-                const trendData = await trendRes.json();
-
-                setSummary(summaryData);
-                setTrend(trendData);
+                setSummary(await summaryRes.json());
+                setTrend(await trendRes.json());
+                setForecast(await forecastRes.json());
+                setAlerts(await alertsRes.json());
+                setSavings(await savingsRes.json());
             } catch (err) {
-                console.error("Failed to fetch analytics", err);
+                console.error("Failed to fetch dashboard data", err);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchAnalytics();
+        fetchData();
     }, [session]);
 
     if (!session) return null;
@@ -110,26 +117,38 @@ export default function DashboardPage() {
                         </div>
                         <div className="glass p-6 rounded-3xl border border-white/10 hover:border-lemon/30 transition-colors">
                             <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Low Stock Items</p>
-                            <h2 className="text-3xl font-black text-white mt-1">12</h2>
-                            <p className="text-strawberry text-xs font-bold mt-2">Action required</p>
+                            <h2 className="text-3xl font-black text-white mt-1">{alerts.length}</h2>
+                            <p className={`${alerts.length > 0 ? 'text-strawberry' : 'text-kiwi'} text-xs font-bold mt-2`}>
+                                {alerts.length > 0 ? 'Action required' : 'All good'}
+                            </p>
                         </div>
                         <div className="glass p-6 rounded-3xl border border-white/10 hover:border-kiwi/30 transition-colors">
-                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Active Suppliers</p>
-                            <h2 className="text-3xl font-black text-white mt-1">8</h2>
-                            <p className="text-kiwi text-xs font-bold mt-2">All systems normal</p>
+                            <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Savings Found</p>
+                            <h2 className="text-3xl font-black text-white mt-1">${savings.reduce((acc, s) => acc + s.potentialSavings, 0)}</h2>
+                            <p className="text-kiwi text-xs font-bold mt-2">AI Optimization active</p>
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2">
+                            <SpendChart
+                                data={trend}
+                                type="line"
+                                title="Spend Trend (30 Days)"
+                            />
+                        </div>
+                        <SmartInsights alerts={alerts} savings={savings} />
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <SpendChart
-                            data={trend}
-                            type="line"
-                            title="Spend Trend (30 Days)"
-                        />
-                        <SpendChart
                             data={summary?.spendByCategory || []}
                             type="bar"
                             title="Spend by Category"
+                        />
+                        <ForecastChart
+                            data={forecast}
+                            title="AI Demand Forecast"
                         />
                     </div>
 
