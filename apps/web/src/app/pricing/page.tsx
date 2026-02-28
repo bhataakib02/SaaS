@@ -47,7 +47,7 @@ export default function PricingPage() {
 
         setLoadingPlan(priceId);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/billing/checkout`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/billing/checkout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

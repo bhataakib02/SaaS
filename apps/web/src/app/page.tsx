@@ -4,8 +4,8 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-8">
-      {/* Floating Particles */}
-      {[...Array(15)].map((_, i) => (
+      {/* Floating Particles (Client-Side Only to prevent hydration mismatch) */}
+      {typeof window !== 'undefined' && [...Array(15)].map((_, i) => (
         <div
           key={i}
           className="particle"

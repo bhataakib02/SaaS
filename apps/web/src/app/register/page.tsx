@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
@@ -13,7 +13,12 @@ export default function RegisterPage() {
         password: "",
     });
     const [error, setError] = useState("");
+    const [mounted, setMounted] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +29,7 @@ export default function RegisterPage() {
         setError("");
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:3001` : 'http://localhost:3001');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:3005` : 'http://localhost:3005');
             const res = await fetch(`${apiUrl}/auth/onboarding`, {
                 method: "POST",
                 body: JSON.stringify(formData),
@@ -51,7 +56,7 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center p-4">
             {/* Floating Particles */}
-            {[...Array(12)].map((_, i) => (
+            {mounted && [...Array(12)].map((_, i) => (
                 <div
                     key={i}
                     className="particle"
@@ -65,82 +70,82 @@ export default function RegisterPage() {
                     } as any}
                 />
             ))}
-            <div className="auth-card relative z-10 max-w-lg w-full p-10 rounded-3xl space-y-8">
-                <div className="flex justify-between items-center">
-                    <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">🍓</div>
-                    <div className="flex gap-2">
+            <div className="auth-card relative z-10 max-w-lg w-full p-12 rounded-[2.5rem] border border-white/5">
+                <div className="flex justify-between items-center mb-10">
+                    <div className="w-14 h-14 rounded-2xl bg-strawberry/10 flex items-center justify-center text-3xl shadow-2xl shadow-strawberry/20">🍓</div>
+                    <div className="flex gap-3">
                         {[1, 2].map((s) => (
-                            <div key={s} className={`w-8 h-1 rounded-full transition-all ${step >= s ? "bg-white" : "bg-white/20"}`} />
+                            <div key={s} className={`w-10 h-1.5 rounded-full transition-all duration-500 ${step >= s ? "bg-strawberry shadow-[0_0_10px_var(--strawberry)]" : "bg-slate-800"}`} />
                         ))}
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <h1 className="text-3xl font-extrabold text-white">Start your journey</h1>
-                    <p className="text-white/70">Launch your multi-tenant procurement portal in seconds</p>
+                <div className="space-y-4 mb-10">
+                    <h1 className="text-4xl font-bold text-white mb-0 text-shadow-none">Join the Network</h1>
+                    <p className="text-slate-400 font-medium text-lg leading-relaxed">Launch your multi-tenant procurement portal on the elite Berry infrastructure.</p>
                 </div>
 
                 {error && (
-                    <div className="bg-lemon/20 border border-lemon/30 text-lemon text-sm p-4 rounded-xl">
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-2xl mb-8 animate-in fade-in slide-in-from-top-2">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={step === 2 ? handleOnboarding : (e) => { e.preventDefault(); setStep(2); }} className="space-y-6">
+                <form onSubmit={step === 2 ? handleOnboarding : (e) => { e.preventDefault(); setStep(2); }} className="space-y-8 !p-0 !bg-transparent !animate-none">
                     {step === 1 ? (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-white/90">Company Name</label>
+                        <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+                            <div className="space-y-3">
+                                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Enterprise Entity Name</label>
                                 <input
                                     name="companyName"
                                     required
                                     value={formData.companyName}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:ring-2 focus:ring-orange/50 outline-none"
+                                    className="w-full px-5 py-4 rounded-2xl text-lg"
                                     placeholder="e.g. Strawberry Hospitality Group"
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-4 rounded-xl bg-white text-strawberry font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="btn btn-primary w-full py-5 rounded-2xl text-xl font-bold shadow-2xl"
                             >
-                                Next Step
+                                Continue Implementation
                             </button>
                         </div>
                     ) : (
-                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-white/90">Full Name</label>
+                        <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
+                            <div className="space-y-3">
+                                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Administrator Full Name</label>
                                 <input
                                     name="name"
                                     required
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:ring-2 focus:ring-orange/50 outline-none"
+                                    className="w-full px-5 py-4 rounded-2xl text-lg"
                                     placeholder="John Doe"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-white/90">Email</label>
+                            <div className="space-y-3">
+                                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Corporate Email Address</label>
                                 <input
                                     name="email"
                                     type="email"
                                     required
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:ring-2 focus:ring-orange/50 outline-none"
+                                    className="w-full px-5 py-4 rounded-2xl text-lg"
                                     placeholder="admin@company.com"
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-semibold text-white/90">Password</label>
+                            <div className="space-y-3">
+                                <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Security Credentials</label>
                                 <input
                                     name="password"
                                     type="password"
                                     required
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:ring-2 focus:ring-orange/50 outline-none"
+                                    className="w-full px-5 py-4 rounded-2xl text-lg"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -148,23 +153,23 @@ export default function RegisterPage() {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex-1 py-4 rounded-xl bg-white/10 text-white font-bold text-lg hover:bg-white/20 transition-all"
+                                    className="flex-1 btn btn-glass py-5 rounded-2xl text-lg font-bold"
                                 >
-                                    Back
+                                    Review
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-[2] py-4 rounded-xl bg-white text-strawberry font-bold text-lg hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                    className="flex-[2] btn btn-primary py-5 rounded-2xl text-xl font-bold shadow-2xl"
                                 >
-                                    Create Portal 🚀
+                                    Deploy Portal 🚀
                                 </button>
                             </div>
                         </div>
                     )}
                 </form>
 
-                <p className="text-center text-white/50 text-sm">
-                    Already have an account? <span onClick={() => router.push('/login')} className="text-white hover:underline cursor-pointer">Log in</span>
+                <p className="text-center text-slate-500 font-medium text-sm mt-12">
+                    Member of the network? <span onClick={() => router.push('/login')} className="text-strawberry/80 hover:text-strawberry hover:underline cursor-pointer transition-colors">Authenticate Here</span>
                 </p>
             </div>
         </div>

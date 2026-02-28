@@ -19,13 +19,13 @@ export default function InventoryPage() {
             if (!session) return;
             try {
                 const [invRes, logsRes, venuesRes] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/inventory`, {
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/inventory`, {
                         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
                     }),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/inventory/logs`, {
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/inventory/logs`, {
                         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
                     }),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/venues`, {
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/venues`, {
                         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
                     })
                 ]);
@@ -65,7 +65,7 @@ export default function InventoryPage() {
 
     const handleExport = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/reports/inventory/csv`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/reports/inventory/csv`, {
                 headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
             });
             const blob = await res.blob();
@@ -91,29 +91,29 @@ export default function InventoryPage() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-4xl font-black text-white tracking-tight">Inventory Intelligence</h1>
-                    <p className="text-white/60 mt-1">Real-time tracking and health visual analytics 🌡️</p>
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">Inventory Intelligence</h1>
+                    <p className="text-gray-500 mt-1 font-medium">Real-time tracking and health visual analytics</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
                     <div className="glass p-1 rounded-2xl flex gap-1">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${viewMode === 'grid' ? 'bg-strawberry text-white' : 'text-white/40 hover:text-white'}`}
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${viewMode === 'grid' ? 'bg-strawberry text-white' : 'text-gray-400 hover:text-gray-900'}`}
                         >
                             Grid
                         </button>
                         <button
                             onClick={() => setViewMode('heatmap')}
-                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${viewMode === 'heatmap' ? 'bg-orange text-white' : 'text-white/40 hover:text-white'}`}
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${viewMode === 'heatmap' ? 'bg-orange text-white' : 'text-gray-400 hover:text-gray-900'}`}
                         >
                             Heatmap
                         </button>
                     </div>
                     <button
                         onClick={handleExport}
-                        className="px-6 py-2 rounded-2xl glass border border-white/10 text-white text-[10px] font-black uppercase hover:bg-white/5 transition-all flex items-center gap-2"
+                        className="px-6 py-2 rounded-2xl glass border border-gray-200 text-gray-700 text-[10px] font-black uppercase hover:bg-gray-50 transition-all flex items-center gap-2 bg-white"
                     >
-                        <span>📄</span> Export Report
+                        Export Report
                     </button>
                 </div>
             </div>
@@ -142,8 +142,8 @@ export default function InventoryPage() {
                                     <div key={i} className="glass p-6 rounded-3xl h-48 animate-pulse" />
                                 ))
                             ) : inventory.length === 0 ? (
-                                <div className="col-span-full py-20 text-center glass rounded-3xl text-white/40 font-bold uppercase tracking-widest bg-white/5">
-                                    No records found 🥝
+                                <div className="col-span-full py-20 text-center glass rounded-3xl text-gray-400 font-bold uppercase tracking-widest bg-gray-50">
+                                    No records found
                                 </div>
                             ) : (
                                 inventory.map((item) => {
@@ -163,18 +163,18 @@ export default function InventoryPage() {
                                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${status.color}`}>
                                                         {status.label}
                                                     </span>
-                                                    <span className="text-white/40 text-xs font-bold uppercase">{item.venue?.name}</span>
+                                                    <span className="text-gray-400 text-xs font-bold uppercase">{item.venue?.name}</span>
                                                 </div>
-                                                <h3 className="text-xl font-bold text-white mt-4">{item.product?.name}</h3>
-                                                <p className="text-white/40 text-xs font-medium uppercase tracking-wider">{item.product?.sku}</p>
+                                                <h3 className="text-xl font-bold text-gray-900 mt-4">{item.product?.name}</h3>
+                                                <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{item.product?.sku}</p>
                                             </div>
 
                                             <div className="mt-8 space-y-4 relative z-10">
                                                 <div className="flex justify-between items-end">
-                                                    <span className="text-4xl font-black text-white">{item.quantity}</span>
-                                                    <span className="text-white/40 font-bold mb-1">units left</span>
+                                                    <span className="text-4xl font-black text-gray-900">{item.quantity}</span>
+                                                    <span className="text-gray-400 font-bold mb-1">units left</span>
                                                 </div>
-                                                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                                                     <motion.div
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${Math.min((item.quantity / 50) * 100, 100)}%` }}

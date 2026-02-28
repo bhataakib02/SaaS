@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -8,7 +8,12 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [mounted, setMounted] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,7 +39,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center p-4">
             {/* Floating Particles */}
-            {[...Array(10)].map((_, i) => (
+            {mounted && [...Array(10)].map((_, i) => (
                 <div
                     key={i}
                     className="particle"
@@ -48,55 +53,55 @@ export default function LoginPage() {
                     } as any}
                 />
             ))}
-            <div className="auth-card relative z-10 w-full max-w-md p-8 rounded-3xl space-y-8">
-                <div className="text-center space-y-2">
-                    <div className="inline-block p-3 rounded-xl bg-white/20 text-3xl mb-2">🍓</div>
-                    <h1 className="text-3xl font-extrabold text-white">Welcome Back</h1>
-                    <p className="text-white/70">Sign in to your fruit procurement portal</p>
+            <div className="auth-card relative z-10 w-full max-w-md p-10 rounded-[2.5rem] border border-white/5">
+                <div className="text-center space-y-3 mb-10">
+                    <div className="mx-auto w-16 h-16 rounded-2xl bg-strawberry/10 flex items-center justify-center text-4xl mb-6 shadow-2xl shadow-strawberry/20">🍓</div>
+                    <h1 className="text-4xl font-bold tracking-tight text-white mb-0 text-shadow-none">Welcome Back</h1>
+                    <p className="text-slate-400 font-medium">Authentication for Berry Suite Elite</p>
                 </div>
 
                 {error && (
-                    <div className="bg-lemon/20 border border-lemon/30 text-lemon text-sm p-4 rounded-xl text-center">
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-4 rounded-2xl text-center animate-in fade-in slide-in-from-top-2">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6 !p-0 !bg-transparent !animate-none">
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-white/90 ml-1">Email address</label>
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Corporate Email</label>
                         <input
                             type="email"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange/50 transition-all"
+                            className="w-full px-5 py-4 rounded-2xl text-lg"
                             placeholder="name@company.com"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-white/90 ml-1">Password</label>
+                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 ml-1">Secure Password</label>
                         <input
                             type="password"
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange/50 transition-all"
+                            className="w-full px-5 py-4 rounded-2xl text-lg"
                             placeholder="••••••••"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full py-4 rounded-xl bg-white text-strawberry font-bold text-lg hover:bg-opacity-90 transform active:scale-[0.98] transition-all shadow-xl"
+                        className="btn btn-primary w-full py-5 rounded-2xl text-xl font-bold shadow-2xl mt-4"
                     >
                         Sign In
                     </button>
                 </form>
 
-                <div className="text-center pt-4">
-                    <p className="text-sm text-white/60">
-                        Don't have an account? <a href="mailto:admin@fruitprocurement.com" className="text-white hover:underline">Contact Admin</a>
+                <div className="text-center pt-8">
+                    <p className="text-sm text-slate-500 font-medium">
+                        Secure Enterprise Portal | <a href="mailto:support@berrysuite.com" className="text-strawberry/80 hover:text-strawberry hover:underline transition-colors">Contact Support</a>
                     </p>
                 </div>
             </div>

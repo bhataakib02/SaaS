@@ -43,7 +43,7 @@ export default function BillingPage() {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/billing/status`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/billing/status`, {
                     headers: {
                         Authorization: `Bearer ${(session as any)?.accessToken}`,
                     },
@@ -62,7 +62,7 @@ export default function BillingPage() {
 
     const handleSubscribe = async (priceId: string) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/billing/create-checkout-session`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005'}/billing/create-checkout-session`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,16 +81,16 @@ export default function BillingPage() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="text-4xl font-black text-white tracking-tight">Billing & Plans</h1>
-                    <p className="text-white/60 mt-1">Select the perfect plan for your business 🍓</p>
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">Billing & Plans</h1>
+                    <p className="text-gray-500 mt-1 font-medium">Select the perfect plan for your business</p>
                 </div>
                 {status && (
-                    <div className="glass px-6 py-3 rounded-2xl border border-white/10 flex items-center gap-4">
+                    <div className="glass px-6 py-3 rounded-2xl border border-gray-200 flex items-center gap-4 bg-white">
                         <div className="text-right">
-                            <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Active Plan</p>
-                            <p className="text-white font-black">{status.plan}</p>
+                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Active Plan</p>
+                            <p className="text-gray-900 font-black">{status.plan}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-kiwi flex items-center justify-center text-xl shadow-lg">🥝</div>
+                        <div className="w-10 h-10 rounded-xl bg-kiwi/10 flex items-center justify-center text-xl shadow-sm text-kiwi">📦</div>
                     </div>
                 )}
             </div>
@@ -100,7 +100,7 @@ export default function BillingPage() {
                     <motion.div
                         key={plan.name}
                         whileHover={{ y: -10 }}
-                        className={`glass p-8 rounded-[2.5rem] border relative flex flex-col ${plan.featured ? 'border-orange ring-4 ring-orange/10 scale-105 z-10' : 'border-white/10'}`}
+                        className={`glass p-8 rounded-[2.5rem] border relative flex flex-col bg-white ${plan.featured ? 'border-orange ring-4 ring-orange/10 scale-105 z-10' : 'border-gray-200'}`}
                     >
                         {plan.featured && (
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-orange rounded-full text-[10px] font-black text-white uppercase tracking-widest">
@@ -109,18 +109,18 @@ export default function BillingPage() {
                         )}
 
                         <div className="text-4xl mb-4">{plan.icon}</div>
-                        <h3 className="text-2xl font-black text-white mb-2">{plan.name}</h3>
-                        <p className="text-white/40 text-sm mb-6">{plan.description}</p>
+                        <h3 className="text-2xl font-black text-gray-900 mb-2">{plan.name}</h3>
+                        <p className="text-gray-500 text-sm mb-6">{plan.description}</p>
 
                         <div className="flex items-baseline gap-1 mb-8">
-                            <span className="text-4xl font-black text-white">{plan.price}</span>
-                            {plan.price !== "Custom" && <span className="text-white/40 font-bold">/month</span>}
+                            <span className="text-4xl font-black text-gray-900">{plan.price}</span>
+                            {plan.price !== "Custom" && <span className="text-gray-400 font-bold">/month</span>}
                         </div>
 
                         <ul className="space-y-4 mb-8 flex-1">
                             {plan.features.map((feature) => (
-                                <li key={feature} className="flex items-center gap-3 text-sm text-white/80 font-medium">
-                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center bg-${plan.color}/20 text-${plan.color} text-[10px]`}>✓</span>
+                                <li key={feature} className="flex items-center gap-3 text-sm text-gray-700 font-medium">
+                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center bg-${plan.color}/10 text-${plan.color} text-[10px]`}>✓</span>
                                     {feature}
                                 </li>
                             ))}
@@ -128,7 +128,7 @@ export default function BillingPage() {
 
                         <button
                             onClick={() => handleSubscribe(plan.priceId)}
-                            className={`w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-xl ${plan.featured ? 'bg-orange text-white shadow-orange/20' : 'bg-white/5 text-white hover:bg-white/10 shadow-black/20'}`}
+                            className={`w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-xl ${plan.featured ? 'bg-orange text-white shadow-orange/20' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                         >
                             {plan.price === "Custom" ? "Contact Us" : "Get Started"}
                         </button>
@@ -136,9 +136,9 @@ export default function BillingPage() {
                 ))}
             </div>
 
-            <div className="glass p-8 rounded-3xl border border-white/10 bg-white/[0.02]">
-                <h2 className="text-xl font-bold text-white mb-4">Billing History</h2>
-                <p className="text-white/40 text-sm">No invoices found. Subscriptions will appear here once active.</p>
+            <div className="glass p-8 rounded-3xl border border-gray-200 bg-white">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Billing History</h2>
+                <p className="text-gray-400 text-sm">No invoices found. Subscriptions will appear here once active.</p>
             </div>
         </div>
     );

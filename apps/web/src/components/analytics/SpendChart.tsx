@@ -11,57 +11,59 @@ interface SpendChartProps {
 const FRUIT_COLORS = ["#E63946", "#F77F00", "#F9C74F", "#43AA8B", "#5A189A"];
 
 export default function SpendChart({ data, type, title }: SpendChartProps) {
+    const safeData = Array.isArray(data) ? data : [];
+
     return (
-        <div className="glass p-8 rounded-3xl border border-white/10 h-[400px] flex flex-col">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                {type === "line" ? "📈" : "📊"} {title}
+        <div className="glass p-8 rounded-3xl border border-gray-200 bg-white h-[400px] flex flex-col">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                {title}
             </h3>
 
             <div className="flex-1 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     {type === "bar" ? (
-                        <BarChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                        <BarChart data={safeData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                             <XAxis
                                 dataKey="name"
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#ffffff40", fontSize: 12 }}
+                                tick={{ fill: "#6b7280", fontSize: 12 }}
                             />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#ffffff40", fontSize: 12 }}
+                                tick={{ fill: "#6b7280", fontSize: 12 }}
                                 tickFormatter={(v) => `$${v}`}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: "#1a1a1a", border: "1px solid #ffffff10", borderRadius: "16px" }}
-                                itemStyle={{ color: "#fff", fontWeight: "bold" }}
+                                contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "16px", color: '#111827' }}
+                                itemStyle={{ color: "#111827", fontWeight: "bold" }}
                             />
                             <Bar dataKey="value" radius={[10, 10, 0, 0]}>
-                                {data.map((_, index) => (
+                                {safeData.map((_, index) => (
                                     <Cell key={`cell-${index}`} fill={FRUIT_COLORS[index % FRUIT_COLORS.length]} />
                                 ))}
                             </Bar>
                         </BarChart>
                     ) : (
-                        <LineChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                        <LineChart data={safeData}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                             <XAxis
                                 dataKey="date"
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#ffffff40", fontSize: 12 }}
+                                tick={{ fill: "#6b7280", fontSize: 12 }}
                             />
                             <YAxis
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: "#ffffff40", fontSize: 12 }}
+                                tick={{ fill: "#6b7280", fontSize: 12 }}
                                 tickFormatter={(v) => `$${v}`}
                             />
                             <Tooltip
-                                contentStyle={{ backgroundColor: "#1a1a1a", border: "1px solid #ffffff10", borderRadius: "16px" }}
-                                itemStyle={{ color: "#fff", fontWeight: "bold" }}
+                                contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "16px", color: '#111827' }}
+                                itemStyle={{ color: "#111827", fontWeight: "bold" }}
                             />
                             <Line
                                 type="monotone"
