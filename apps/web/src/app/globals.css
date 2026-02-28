@@ -21,9 +21,7 @@
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(99, 102, 241, 0.1);
     /* Based on new primary */
-}
-
-@theme {
+    /* Tailwind v4 theme mappings */
     --color-strawberry: var(--strawberry);
     --color-orange: var(--orange);
     --color-lemon: var(--lemon);
