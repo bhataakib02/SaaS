@@ -32,8 +32,23 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-fruit p-4">
-            <div className="glass max-w-md w-full p-8 rounded-2xl shadow-2xl space-y-8">
+        <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center p-4">
+            {/* Floating Particles */}
+            {[...Array(10)].map((_, i) => (
+                <div
+                    key={i}
+                    className="particle"
+                    style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                        width: `${Math.random() * 10 + 5}px`,
+                        height: `${Math.random() * 10 + 5}px`,
+                        animationDelay: `${Math.random() * 10}s`,
+                        animationDuration: `${Math.random() * 15 + 10}s`
+                    } as any}
+                />
+            ))}
+            <div className="auth-card relative z-10 w-full max-w-md p-8 rounded-3xl space-y-8">
                 <div className="text-center space-y-2">
                     <div className="inline-block p-3 rounded-xl bg-white/20 text-3xl mb-2">🍓</div>
                     <h1 className="text-3xl font-extrabold text-white">Welcome Back</h1>

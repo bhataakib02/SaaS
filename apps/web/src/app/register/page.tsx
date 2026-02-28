@@ -49,8 +49,23 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-fruit p-4">
-            <div className="glass max-w-lg w-full p-10 rounded-2xl shadow-2xl space-y-8">
+        <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center p-4">
+            {/* Floating Particles */}
+            {[...Array(12)].map((_, i) => (
+                <div
+                    key={i}
+                    className="particle"
+                    style={{
+                        left: `${Math.random() * 100}%`,
+                        top: `${Math.random() * 100}%`,
+                        width: `${Math.random() * 10 + 5}px`,
+                        height: `${Math.random() * 10 + 5}px`,
+                        animationDelay: `${Math.random() * 10}s`,
+                        animationDuration: `${Math.random() * 15 + 10}s`
+                    } as any}
+                />
+            ))}
+            <div className="auth-card relative z-10 max-w-lg w-full p-10 rounded-3xl space-y-8">
                 <div className="flex justify-between items-center">
                     <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">🍓</div>
                     <div className="flex gap-2">

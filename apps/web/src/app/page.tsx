@@ -3,8 +3,23 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-vh-100 flex flex-col items-center justify-center p-8 bg-[var(--background)]">
-      <main className="w-full max-w-4xl space-y-12">
+    <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-8">
+      {/* Floating Particles */}
+      {[...Array(15)].map((_, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${Math.random() * 10 + 5}px`,
+            height: `${Math.random() * 10 + 5}px`,
+            animationDelay: `${Math.random() * 10}s`,
+            animationDuration: `${Math.random() * 15 + 10}s`
+          } as any}
+        />
+      ))}
+      <main className="container relative z-10 w-full max-w-4xl space-y-12">
         {/* Hero Section */}
         <section className="text-center space-y-6">
           <div className="inline-block px-4 py-1 rounded-full bg-strawberry/10 text-strawberry text-sm font-semibold tracking-wide border border-strawberry/20">
