@@ -48,12 +48,30 @@ export default function DashboardPage() {
         fetchData();
     }, [session]);
 
+    const handleExport = async () => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/reports/spend/csv`, {
+                headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
+            });
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `spend-report-${new Date().getTime()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (err) {
+            console.error("Export failed", err);
+        }
+    };
+
     if (!session) return null;
 
     return (
         <div className="min-h-screen bg-[var(--background)] flex">
             {/* Sidebar */}
-            <aside className="w-64 glass m-4 rounded-3xl flex flex-col p-6 space-y-8 h-[calc(100vh-2rem)] sticky top-4">
+            <aside className="hidden lg:flex w-64 glass m-4 rounded-3xl flex-col p-6 space-y-8 h-[calc(100vh-2rem)] sticky top-4">
                 <div className="flex items-center gap-3 px-2">
                     <span className="text-3xl">🍓</span>
                     <span className="font-black text-2xl tracking-tighter text-white">FRUITIFY</span>
@@ -89,20 +107,26 @@ export default function DashboardPage() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 space-y-8">
+            <main className="flex-1 p-4 md:p-8 space-y-8 overflow-x-hidden">
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
-                    <header className="flex justify-between items-center">
+                    <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
                             <h1 className="text-4xl font-black text-white tracking-tight">
                                 Overview
                             </h1>
                             <p className="text-white/60 mt-1 font-medium">Welcome back, {session?.user?.name || 'User'} 🍓</p>
                         </div>
-                        <div className="flex items-center gap-6">
+                        <div className="flex flex-wrap items-center gap-4">
+                            <button
+                                onClick={handleExport}
+                                className="px-5 py-2.5 rounded-2xl glass border border-white/10 text-white font-bold hover:bg-white/5 transition-all flex items-center gap-2 text-sm"
+                            >
+                                📊 Export Spend
+                            </button>
                             <NotificationCenter accessToken={(session as any)?.accessToken} />
                             <div className="glass px-4 py-2 rounded-full flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-kiwi animate-pulse"></div>
-                                <p className="text-white/60 font-medium">Role: {(session?.user as any)?.role || 'Staff'}</p>
+                                <p className="text-white/60 font-medium text-xs">Role: {(session?.user as any)?.role || 'Staff'}</p>
                             </div>
                         </div>
                     </header>

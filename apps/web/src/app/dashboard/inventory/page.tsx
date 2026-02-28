@@ -13,6 +13,7 @@ export default function InventoryPage() {
 
     useEffect(() => {
         const fetchInventoryData = async () => {
+            if (!session) return;
             try {
                 const [invRes, logsRes] = await Promise.all([
                     fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/inventory`, {
@@ -33,8 +34,26 @@ export default function InventoryPage() {
             }
         };
 
-        if (session) fetchInventoryData();
+        fetchInventoryData();
     }, [session]);
+
+    const handleExport = async () => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/reports/inventory/csv`, {
+                headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
+            });
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `inventory-report-${new Date().getTime()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } catch (err) {
+            console.error("Export failed", err);
+        }
+    };
 
     const getStockStatus = (quantity: number, minStock: number) => {
         if (quantity <= 0) return { label: "Out of Stock", color: "bg-strawberry text-white", bar: "bg-strawberry" };
@@ -44,12 +63,18 @@ export default function InventoryPage() {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-end">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-4xl font-black text-white tracking-tight">Stock Heatmap</h1>
                     <p className="text-white/60 mt-1">Real-time inventory levels across venues 🌡️</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-4">
+                    <button
+                        onClick={handleExport}
+                        className="px-6 py-3 rounded-2xl glass border border-white/10 text-white font-bold hover:bg-white/5 transition-all flex items-center gap-2"
+                    >
+                        <span>📄</span> Export CSV
+                    </button>
                     <div className="glass px-4 py-2 rounded-2xl flex items-center gap-2">
                         <span className="w-3 h-3 rounded-full bg-strawberry"></span>
                         <span className="text-xs font-bold text-white/60 uppercase">Critical</span>
@@ -62,7 +87,6 @@ export default function InventoryPage() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                {/* Main Inventory Grid */}
                 <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 content-start">
                     {isLoading ? (
                         [1, 2, 3, 4].map(i => (
@@ -115,7 +139,6 @@ export default function InventoryPage() {
                     )}
                 </div>
 
-                {/* Audit Trail Sidebar */}
                 <div className="xl:col-span-4">
                     <InventoryAuditView logs={logs} />
                 </div>
@@ -123,4 +146,3 @@ export default function InventoryPage() {
         </div>
     );
 }
-

@@ -14,22 +14,30 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { BillingModule } from './billing/billing.module';
 import { AiModule } from './ai/ai.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ReportsModule } from './reports/reports.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
     PrismaModule,
     AuthModule,
-    CompaniesModule,
-    VenuesModule,
-    SuppliersModule,
+
     ProductsModule,
-    IngestionModule,
+    VenuesModule,
     OrdersModule,
+    SuppliersModule,
     InventoryModule,
+    IngestionModule,
+    CompaniesModule,
     AnalyticsModule,
     BillingModule,
     AiModule,
     NotificationsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
