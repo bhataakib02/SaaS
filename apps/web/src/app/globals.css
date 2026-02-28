@@ -23,7 +23,7 @@
     /* Based on new primary */
 }
 
-@theme inline {
+@theme {
     --color-strawberry: var(--strawberry);
     --color-orange: var(--orange);
     --color-lemon: var(--lemon);
